@@ -65,25 +65,30 @@ class Carrito {
         }
     }
     eliminarProducto(sku, cantidad) {
-        console.log(`Eliminando ${cantidad} ${sku}`);
-    
-        const existeProducto = this.productos.find(producto => producto.sku === sku);
-    
-        if (existeProducto) {
-            if (cantidad < existeProducto.cantidad) {
-                existeProducto.cantidad -= cantidad;
-                this.precioTotal -= existeProducto.precio * cantidad;
-                return Promise.resolve(`Se eliminaron ${cantidad} ${sku} del carrito.`);
-            } else {
-                this.productos = this.productos.filter(producto => producto.sku !== sku);
-                this.precioTotal -= existeProducto.precio * existeProducto.cantidad;
-                return Promise.resolve(`Se eliminó ${sku} del carrito.`);
-            }
+  console.log(`Eliminando ${cantidad} ${sku}`);
+
+  const existeProducto = this.productos.find(producto => producto.sku === sku);
+
+  try {
+    return new Promise((resolve, reject) => {
+      if (existeProducto) {
+        if (cantidad < existeProducto.cantidad) {
+          existeProducto.cantidad -= cantidad;
+          this.precioTotal -= existeProducto.precio * cantidad;
+          resolve(`Se eliminaron ${cantidad} ${sku} del carrito.`);
         } else {
-            return Promise.reject(`El producto ${sku} no existe en el carrito.`);
+          this.productos = this.productos.filter(producto => producto.sku !== sku);
+          this.precioTotal -= existeProducto.precio * existeProducto.cantidad;
+          resolve(`Se eliminó ${sku} del carrito.`);
         }
-    }
- }
+      } else {
+        reject(`El producto ${sku} no existe en el carrito.`);
+      }
+    });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
     
 
 // Cada producto que se agrega al carrito es creado con esta clase
