@@ -113,8 +113,11 @@ const carrito = new Carrito();
 carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('WE328NJ', 2);
 carrito.agregarProducto('WEandoJ', 2);
-carrito.eliminarProducto(`WE328NJ`,2)
-    .then(mensaje=>(mensaje))
-    .catch(error=> console.log(error));
 carrito.eliminarProducto(`WE328NJ`,2);
+eliminarProducto('WE328NJ', 2)
+    .then(resultado => {
+        console.log(resultado);
+})
+   .catch(error => {
+  console.error(error);
 
