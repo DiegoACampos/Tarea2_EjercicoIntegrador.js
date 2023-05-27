@@ -5,12 +5,11 @@ class Producto {
         this.nombre = nombre;
         this.categoria = categoria;
         this.precio = precio;
-        this.stock = stock
         // Si no me definen stock, pongo 10 por defecto
-        if (stock) {
-            this.stock = stock;
-        } else {
+        if (!stock) {
             this.stock = 10;
+        } else {
+            this.stock = stock;
         }
     }
 }
@@ -35,13 +34,14 @@ class Carrito {
         this.productos = [];
         this.categorias = [];
     }
+
     /**
      * función que agrega @{cantidad} de productos con @{sku} al carrito
      */
     async agregarProducto(sku, cantidad) {
         console.log(`Agregando ${cantidad} ${sku}`);
 
-        const buscoEnCarritoFound = this.productos.find(producto => producto.sku === sku)
+        const buscoEnCarritoFound = this.productos.find(producto => producto.sku === sku);
 
         if (buscoEnCarritoFound) {
             buscoEnCarritoFound.cantidad += cantidad;
@@ -55,41 +55,42 @@ class Carrito {
                 const nuevoProducto = new ProductoEnCarrito(sku, producto.nombre, cantidad);
                 this.productos.push(nuevoProducto);
                 this.precioTotal += producto.precio * cantidad;
-                const verificarCategoriaTrue = this.categoria.includes(producto.categoria);
+                const verificarCategoriaTrue = this.categorias.includes(producto.categoria);
                 if (!verificarCategoriaTrue) {
-                    this.categorias.push(producto.categoria)
+                    this.categorias.push(producto.categoria);
                 }
             } catch (error) {
                 console.log(`Error: ${error}`);
             }
         }
     }
+
     eliminarProducto(sku, cantidad) {
-  console.log(`Eliminando ${cantidad} ${sku}`);
+        console.log(`Eliminando ${cantidad} ${sku}`);
 
-  const existeProducto = this.productos.find(producto => producto.sku === sku);
+        const existeProducto = this.productos.find(producto => producto.sku === sku);
 
-  try {
-    return new Promise((resolve, reject) => {
-      if (existeProducto) {
-        if (cantidad < existeProducto.cantidad) {
-          existeProducto.cantidad -= cantidad;
-          this.precioTotal -= existeProducto.precio * cantidad;
-          resolve(`Se eliminaron ${cantidad} ${sku} del carrito.`);
-        } else {
-          this.productos = this.productos.filter(producto => producto.sku !== sku);
-          this.precioTotal -= existeProducto.precio * existeProducto.cantidad;
-          resolve(`Se eliminó ${sku} del carrito.`);
+        try {
+            return new Promise((resolve, reject) => {
+                if (existeProducto) {
+                    if (cantidad < existeProducto.cantidad) {
+                        existeProducto.cantidad -= cantidad;
+                        this.precioTotal -= existeProducto.precio * cantidad;
+                        resolve(`Se eliminaron ${cantidad} ${sku} del carrito.`);
+                    } else {
+                        this.productos = this.productos.filter(producto => producto.sku !== sku);
+                        this.precioTotal -= existeProducto.precio * existeProducto.cantidad;
+                        resolve(`Se eliminó ${cantidad} ${sku} del carrito.`);
+                    }
+                } else {
+                    reject(`El producto ${sku} no existe en el carrito.`);
+                }
+            });
+        } catch (error) {
+            return Promise.reject(error);
         }
-      } else {
-        reject(`El producto ${sku} no existe en el carrito.`);
-      }
-    });
-  } catch (error) {
-    return Promise.reject(error);
-  }
+    }
 }
-    
 
 // Cada producto que se agrega al carrito es creado con esta clase
 class ProductoEnCarrito {
@@ -104,7 +105,7 @@ class ProductoEnCarrito {
 function findProductBySku(sku) {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            const foundProduct = productosDelSuper.find(product => product.sku === sku);
+            const foundProduct = productosDelSuper.find(producto => producto.sku === sku);
             if (foundProduct) {
                 resolve(foundProduct);
             } else {
@@ -116,13 +117,11 @@ function findProductBySku(sku) {
 
 const carrito = new Carrito();
 carrito.agregarProducto('WE328NJ', 2);
-carrito.agregarProducto('WE328NJ', 2);
-carrito.agregarProducto('WEandoJ', 2);
-carrito.eliminarProducto(`WE328NJ`,2);
-eliminarProducto('WE328NJ', 2)
+carrito.eliminarProducto('WE328NJ', 2)
     .then(resultado => {
         console.log(resultado);
-})
-   .catch(error => {
-  console.error(error);
-
+    })
+    .catch(error => {
+        console.log(error);
+    });
+carrito.agregarProducto('WE328NJ', 2);
